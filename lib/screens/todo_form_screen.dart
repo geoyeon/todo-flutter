@@ -1,24 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:todo_flutter/data/datasources/local/daos/todo.dao.dart';
-import 'package:todo_flutter/pages/TodoFormPage.dart';
+import 'package:todo_flutter/screens/home_screen.dart';
 
 import '../data/datasources/local/models/todo.dart';
 
-class TodoFormScreen extends ConsumerStatefulWidget {
-  const TodoFormScreen({super.key});
+class TodoFormScreenEvent extends ScreenEvent {
+  final dynamic value;
 
-  @override
-  ConsumerState<TodoFormScreen> createState() => _TodoFormScreenState();
+  TodoFormScreenEvent({
+    String screen = 'TodoFormScreen',
+    required super.name,
+    this.value
+}) : super(screen: screen);
 }
 
-class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
+class TodoFormScreen extends StatefulWidget {
+  final ValueChanged<TodoFormScreenEvent> onEvent;
+  final Todo? todo;
+
+  const TodoFormScreen({super.key, this.todo, required this.onEvent});
+
+  @override
+  State<TodoFormScreen> createState() => _TodoFormScreenState();
+}
+
+class _TodoFormScreenState extends State<TodoFormScreen> {
   final _titleController = TextEditingController();
   final _memoController = TextEditingController();
 
   DateTime _startDateTime = DateTime.now();
   DateTime _endDateTime = DateTime.now().add(const Duration(hours: 1));
+
+  @override
+  void initState() {
+    super.initState();
+
+    _titleController.text = widget.todo?.title ?? '';
+    _memoController.text = widget.todo?.memo ?? '';
+    _startDateTime = widget.todo?.startDate ?? DateTime.now();
+    _endDateTime = widget.todo?.endDate ?? DateTime.now().add(const Duration(hours: 1));
+  }
 
   @override
   void dispose() {
@@ -55,6 +77,7 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
       context: context,
       initialTime: TimeOfDay.fromDateTime(isStart ? _startDateTime : _endDateTime),
     );
+
     if (picked != null) {
       if (isStart) {
         setState(() {
@@ -82,15 +105,6 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = ref.watch(todoFormProvider);
-
-    if (vm.todo != null) {
-      _titleController.text = vm.todo?.title ?? '';
-      _memoController.text = vm.todo?.memo ?? '';
-      _startDateTime = vm.todo?.startDate ?? DateTime.now();
-      _endDateTime = vm.todo?.endDate ?? DateTime.now().add(const Duration(hours: 1));
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Todo 작성'),
@@ -113,7 +127,7 @@ class _TodoFormScreenState extends ConsumerState<TodoFormScreen> {
               }
 
 
-              Todo todo = vm.todo == null ? Todo() : vm.todo!;
+              Todo todo = widget.todo == null ? Todo() : widget.todo!;
               todo.title = _titleController.text;
               todo.memo = _memoController.text;
               todo.startDate = _startDateTime;
