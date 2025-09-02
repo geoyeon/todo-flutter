@@ -38,10 +38,14 @@ class TodoFormPage extends ConsumerStatefulWidget {
         duration: const Duration(microseconds: 250),
         switchInCurve: Curves.easeIn,
         switchOutCurve: Curves.easeOut,
-        child: TodoFormScreen(),
+        child: TodoFormScreen(todo: vm.todo, onEvent: (event) => _handleEvent(context, event)),
       );
   }
+
+  void _handleEvent(BuildContext context, TodoFormScreenEvent event) {
+    print('event name: ${event.name}');
   }
+}
 
   class TodoFormViewModel {
     final Todo? todo;
