@@ -20,8 +20,7 @@ class App extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       routerConfig: routerConfig,
-      locale: const Locale('ko'),
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
