@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_flutter/router/router.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+
 
 class App extends StatelessWidget {
   const App({Key? key}): super(key: key);
@@ -18,6 +20,16 @@ class App extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       routerConfig: routerConfig,
+      locale: const Locale('ko'),
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ko'),
+        Locale('en'),
+      ],
     );
   }
 }
